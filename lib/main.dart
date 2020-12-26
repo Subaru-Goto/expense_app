@@ -1,6 +1,7 @@
 import './widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 import './widgets/new_transactions.dart';
+import './widgets/chart.dart';
 import './models/transaction.dart';
 
 //void main() {
@@ -18,18 +19,24 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
         fontFamily: 'OpenSand',
-        textTheme: ThemeData.light().textTheme.copyWith(
+        textTheme: ThemeData
+            .light()
+            .textTheme
+            .copyWith(
             headline6: TextStyle(
               fontFamily: 'OpenSans',
               fontWeight: FontWeight.bold,
-              fontSize:  18,
+              fontSize: 18,
             )),
         appBarTheme: AppBarTheme(
-            textTheme: ThemeData.light().textTheme.copyWith(
+            textTheme: ThemeData
+                .light()
+                .textTheme
+                .copyWith(
               headline6: TextStyle(
-              fontFamily: 'Quicksand',
-              fontSize: 20,
-              fontWeight: FontWeight.bold),))
+                  fontFamily: 'Quicksand',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),))
         ,),
       home: MyHomePage(),
     );
@@ -63,6 +70,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ];
 
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+          DateTime.now().subtract(
+            Duration(days: 7),
+          ),
+      );
+    }).toList();
+  }
+
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
       title: txTitle,
@@ -81,9 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
       context: ctx,
       builder: (_) {
         return GestureDetector(
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-            child: NewTransaction(_addNewTransaction),);
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          child: NewTransaction(_addNewTransaction),);
       },
     );
   }
@@ -101,7 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(
               Icons.menu,
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             ),
             onPressed: () => _startAddNewTransaction(context),
           ),
@@ -116,15 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal alignment
           children: <Widget>[
             // declare that Column contains list of widget
-            Container(
-              width: double.infinity,
-              color: Theme.of(context).primaryColor,
-              child: Card(
-                color: Theme.of(context).primaryColor,
-                child: Text('CHART!'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_userTransactions),
           ],
         ),
